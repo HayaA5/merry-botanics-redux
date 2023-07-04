@@ -1,0 +1,11 @@
+.details-message{
+    font-size: 13px;
+    background-color:rgba(49,181,114,1);
+    color:white;
+    border-radius: 25px;
+    padding: 0px 3px 0px 3px ;
+}
+
+.quantity{
+    display: flex;
+}

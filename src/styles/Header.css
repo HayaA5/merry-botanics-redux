@@ -1,0 +1,19 @@
+.mb-header {
+	color: black;
+	text-align: right;
+	padding: 32px;
+	border-bottom: solid 3px black;
+	display: flex;
+	justify-content: flex-end;
+	flex-direction: row;
+	align-items: center;
+}
+
+.mb-title {
+	padding-left: 32px;
+}
+
+.mb-logo {
+	height: 45px;
+	width: 45px;
+}
