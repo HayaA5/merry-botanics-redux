@@ -1,8 +1,11 @@
 import { useState, useEffect, useContext } from 'react'
 import '../styles/Cart.css'
 import { CartContext } from '../contexts/CartContext';
-
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import Payment from './Payment';
+import { UserContext } from '../contexts/UserContext';
 function Cart(){
+	const [user, setUser]=useContext(UserContext);
 	const [cart,updateCart]=useContext(CartContext);	
 	const [isOpen, setIsOpen] = useState(true)
 	const total = cart.reduce(
@@ -33,6 +36,7 @@ function Cart(){
 			>
 				close
 			</button>
+			<AiOutlineShoppingCart/>
 			{cart.length > 0 ? (
 				<div>
 					<h2>Cart</h2>
@@ -45,7 +49,10 @@ function Cart(){
 						))}
 					</ul>
 					<h3>Total :{total}$</h3>
+					<div className='cart-btns-container'>
 					<button className='cart-btn' onClick={() => updateCart([])}>Empty cart</button>
+					<Payment cart={cart}/>
+				</div>
 				</div>
 			) : (
 				<div>Your cart is empty</div>

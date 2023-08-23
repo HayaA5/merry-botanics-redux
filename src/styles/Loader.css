@@ -1,0 +1,27 @@
+.loader{
+    padding: 10px;
+    border: 6px solid rgba(49,181,114,1);
+    opacity:0.5;
+    border-bottom-color: transparent;
+    border-radius: 50px;
+    animation:rotate1 1s infinite linear;
+    height: 50px;
+    width: 50px;
+   /* justify-items: center; */
+   margin:300px;
+}
+
+.loaderWrapper{
+  /* display:flex; */
+  /* justify-content: center; */
+  /* justify-self: center; */
+}
+
+@keyframes rotate1 {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }

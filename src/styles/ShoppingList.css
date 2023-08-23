@@ -9,18 +9,3 @@
 	flex-wrap: wrap;
 	justify-content: center;
 }
-.md-add-btn{
-	height: 25px;
-	width:50px;
-	border-radius: 20px;
-	border:none;
-	background-color:rgba(49,181,114,1);
-	color:white;
-	text-align: center;
-	padding:5px;
-	justify-content: center;
-}
-.md-add-btn:hover{
-	background-color: rgba(49,181,114,0.8);
-	cursor:pointer;
-}
