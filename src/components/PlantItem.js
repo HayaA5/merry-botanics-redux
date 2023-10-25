@@ -2,11 +2,11 @@ import CareScale from './CareScale'
 import '../styles/PlantItem.css'
 import { useContext, useRef, useState, useEffect } from 'react';
 import { CartContext } from '../contexts/CartContext';
-
+import { UserContext } from '../contexts/UserContext';
 function PlantItem({ cover, name, water, light, price ,barcode, stock, stockReal}) {
 	const [actualStock, setActualStock]=useState(stockReal);
 	const [cart,updateCart]=useContext(CartContext);	
-
+	const [user, ]=useContext(UserContext);
 useEffect(
 	updateActualStock,[cart]
 )
@@ -39,6 +39,7 @@ useEffect(
 				<CareScale careType='light' scaleValue={light} key={`light ${light}`} />
 			</div>
 			<button onClick={() =>{ addToCart(barcode,name, price); updateActualStock(); }} className={`mb-add-btn ${actualStock<=0? 'btn-disabled' : ''}`} disabled={actualStock<=0}>Add</button>
+			
 		</li>
 	)
 }

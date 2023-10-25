@@ -7,15 +7,10 @@
     animation:rotate1 1s infinite linear;
     height: 50px;
     width: 50px;
-   /* justify-items: center; */
    margin:300px;
 }
 
-.loaderWrapper{
-  /* display:flex; */
-  /* justify-content: center; */
-  /* justify-self: center; */
-}
+
 
 @keyframes rotate1 {
     from {

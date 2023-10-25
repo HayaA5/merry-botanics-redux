@@ -11,19 +11,9 @@
 label{
 	justify-content: right;
 }
-
 .mb-footer-elem {
 	margin-bottom: 10px;
 }
-/* .form_group {
-	margin-bottom: 15px;
-  }
-  
-  .form_group label {
-	display: block;
-	margin-bottom: 5px;
-	font-weight: bold;
-  } */
   .mb-send-btn{
 	height: 35px;
 	width:70px;
@@ -52,7 +42,6 @@ label{
 .inputFooter:not(:focus):invalid{
 	border: red 1px solid;
 } 
-
 .invalidMsg{
     background-color:rgb(255, 166, 166);
     color: white;
@@ -75,4 +64,5 @@ label{
 .btn-disabled:hover{
 	cursor:auto;
 	background-color: grey;
+	opacity: 1;
 }

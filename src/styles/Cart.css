@@ -45,6 +45,7 @@
 	text-align: center;
 	padding:5px;
 	justify-content: center;
+	margin-left:10px;
 }
 .cart-btn:hover{
 	cursor:pointer;
@@ -53,9 +54,13 @@
 .one-article-in-cart{
 	display:flex;
 	padding:8px;
+	justify-content: space-between;
 }
 
 .cart-btns-container{
 	display:flex;
 	flex-direction: column;
+}
+.message-login{
+	color:red;
 }

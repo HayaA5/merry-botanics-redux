@@ -3,7 +3,6 @@ import Sun from '../assets/sun.svg'
 import Water from '../assets/water.svg'
 import '../styles/CareScale.css'
 
-
 const quantityLabel = {
 	1: 'a little bit of',
 	2: 'moderately',
@@ -30,7 +29,6 @@ function CareScale({ scaleValue, careType }) {
 	const handleOnMouseEnter = () => {
 		setIsHovered(true);
 	};
-
 
 	return (
 		<div className='quantity' onMouseOver={handleOnMouseEnter} onMouseLeave={handleOnMouseLeave}>

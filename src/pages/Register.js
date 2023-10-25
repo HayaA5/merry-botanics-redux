@@ -1,41 +1,45 @@
 import '../styles/Register.css'
-import { useState , useEffect, useContext} from 'react';
+import { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
-//import api from "../../Functions/API_Calls/apiCalls";
 import api from '../functions/API_Calls/apiCalls';
-//import UserContext from '../contexts/UserContext'
 import { Link } from 'react-router-dom';
+import {AiOutlineEye} from 'react-icons/ai'
 
 function Register() {
     document.title = 'Register'
-    //setInputsObj({ ...inputsObj, [e.target.id]: e.target.value });
-   // const { setUser } = useContext(UserContext);
-    const [fullName, setFullName] = useState(''),
-        [email, setEmail] = useState(''),
-        [password, setPassword] = useState(''),
+      const  [password, setPassword] = useState(''),
         [message, setMessage] = useState(false),
         [passwordVerification, setPasswordVerification] = useState(), //add a verification
+        [passwordSame, setPasswordSame]=useState(true),
+        [displayPassword, setDisplayPassword] = useState(false),
+        [displayPasswordVer, setDisplayPasswordVer] = useState(false),
         navigate = useNavigate();
-
 
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const url = "/users/register"
-        const data = {
-            fullName,
-            email,
-            password
+        if(e.currentTarget.password.value!== e.currentTarget.confirmPassword.value){
+            setMessage("passwords are different")
+            setTimeout(() => {
+                setMessage(false)
+            }, 1500)
+            return;
         }
-    
-        const result=  api.post(url, data).then(data=>{
-            console.log('data in then',data.code);
-            if(data.code==200){
-                console.log('navigate to login');
-                navigate('/login');
         
+        const url = "/users/register"
+
+        const data = {
+            fullName:e.currentTarget.username.value,
+            email:e.currentTarget.email.value,
+            password:e.currentTarget.password.value
+        }
+
+        api.post(url, data).then(data=>{
+      
+            if(data.code==200){
+                navigate('/login');
             }else {
-                setMessage("input error")
+                setMessage(data.message)
                 setTimeout(() => {
                     setMessage(false)
                 }, 1500)
@@ -43,18 +47,13 @@ function Register() {
         })
 
     }
+
 const checkPasswords=()=>{
-    debugger;
-    if(password && passwordVerification){
-        const x= password===passwordVerification?true:false;
-       // console.log(x?'identiques':'differents')
-        return x;
-    }
-    
-    return true;
+   setPasswordSame(!password  || !passwordVerification || password==passwordVerification? true:false);
 }
+
     return (
-        <div className='registration_container'>
+        <div className='registration_container fadeIn'>
             <h2>Register:</h2>
             <form onSubmit={handleSubmit}>
                 <div className='form_group'>
@@ -64,8 +63,6 @@ const checkPasswords=()=>{
                         id="username"
                         name="username"
                         placeholder="user name"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
                         required
                     />
                 </div>
@@ -76,43 +73,52 @@ const checkPasswords=()=>{
                         id="email"
                         name="email"
                         placeholder="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
                 <div className='form_group'>
                     <label htmlFor="password">password:</label>
+                    <div className='passwordContainer'>
                     <input
-                        type="password"
+                        type={displayPassword ? "text" : "password"}
                         id="password"
                         name="password"
                         placeholder="choose a password"
+                        className={` ${passwordSame? '' : 'notValid'}`}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         onBlur={checkPasswords}
                         required
                     />
+                    <AiOutlineEye onClick={()=>{setDisplayPassword(!displayPassword);}} />
+                    </div>
                 </div>
+
                 <div className='form_group'>
                     <label htmlFor="ConfirmPassword">confirm password:</label>
+                    <div className='passwordContainer'>
                     <input
-                        type="password"
-                        id="ConfirmPassword"
-                        name="ConfirmPassword"
+                       type={displayPasswordVer ? "text" : "password"}
+                        id="confirmPassword"
+                        name="confirmPassword"
                         placeholder="confirm the password"
+                        className={` ${passwordSame? '' : 'notValid'}`}
                         value={passwordVerification}
                         onChange={(e) => setPasswordVerification(e.target.value)}
                         onBlur={checkPasswords}
                         required
                     />
+                     <AiOutlineEye onClick={()=>{setDisplayPasswordVer(!displayPasswordVer)}} />
+                     </div>
                 </div>
+                {/* <button type="submit" className={`btn_register ${password!==passwordVerification? 'btn-disabled':''}`} disabled={password!==passwordVerification}>Register</button> */}
                 <button type="submit" className='btn_register'>Register</button>
+
             </form>
             <div>You already have an account?
         <Link className='link' to="/login">Login</Link>
       </div>
-            {message}
+      <div className='errorMessage'>{message}</div>
         </div>
     );
 };

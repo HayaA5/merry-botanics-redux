@@ -1,38 +1,46 @@
 import React, { useState , useContext} from 'react';
-import { Link, useNavigate } from 'react-router-dom'
-//import api from '../../Functions/API_Calls/apiCalls'
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../functions/API_Calls/apiCalls';
 import '../styles/Login.css'
 import {UserContext} from '../contexts/UserContext'
+import {AiOutlineEye} from 'react-icons/ai'
 
 function Login() {
   document.title = 'Login'
-  const [user,setUser] = useContext(UserContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState(false)
+  const [,setUser] = useContext(UserContext);
+  const [displayPassword, setDisplayPassword] = useState(false);
+ // const [email, setEmail] = useState('');
+  //const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('')
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault();
-console.log("hamdlesubmit")
     const url = "/users/login"
-    const data = {
-      email,
-      password
+    const data={
+      email:e.currentTarget.email.value,
+      password:e.currentTarget.password.value
     }
+    
   {
     
-    const result = api.post(url, data).then(result=>{
-      console.log('result',result.message.userDetails)
+    //const result = 
+    api.post(url, data).then(result=>{
       if (result.message.token) {//change in backend not so much "nested"
-       // console.log("first if")
-        localStorage.setItem('token', result.token);
+        localStorage.setItem('token', result.message.token);
         setUser(result.message.userDetails)
-        navigate('/')
+        //setCart(JSON.parse(localStorage.getItem('cart')))
+        navigate('/', {state:{
+          cart: JSON.parse(localStorage.getItem('cart')),
+        }}) 
+       
       } else {
         setMessage('email or password is not valid')
-        return false;
+        setTimeout(() => {
+            setMessage('')
+        }, 1500)
+        
+        //return false;
       }
     });
     
@@ -63,10 +71,10 @@ console.log("hamdlesubmit")
   
   //      }else {
   //       console.log("pb")
-  //     //    setMessage("פרטיך שגויים")
-  //     //     setTimeout(() => {
-  //     //         setMessage(false)
-  //     //     }, 1500)
+  //        setMessage("פרטיך שגויים")
+  //         setTimeout(() => {
+  //             setMessage(false)
+  //         }, 1500)
   //      }
   // })
   }
@@ -76,10 +84,10 @@ console.log("hamdlesubmit")
   //   api.put(url, email)
   // };
 
-console.log("login!!")
+
 
   return (
-    <div className='login_container'>
+    <div className='login_container fadeIn'>
       <h2>Login </h2>
       <form onSubmit={handleSubmit}>
         <div className='form_group'>
@@ -89,22 +97,25 @@ console.log("login!!")
             id="email"
             name="email"
             placeholder="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+           // value={email}
+            //onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
         <div className='form_group'>
           <label htmlFor="password">password:</label>
+          <div className='passwordContainer'>
           <input
-            type="password"
+            type={displayPassword ? "text" : "password"}
             id="password"
             name="password"
             placeholder="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+          //  value={password}
+            //onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <AiOutlineEye onClick={()=>{setDisplayPassword(!displayPassword)}} />
+          </div>
         </div>
         <button type="submit" className='btn_login'>Login</button>
       </form>
@@ -113,7 +124,7 @@ console.log("login!!")
         <Link className='link' to="/Register">Register</Link>
       </div>
       <div onClick={handleForgetPassword} className='forgetPassword'>Forgot password</div>
-      {message}
+      <div className='errorMessage'>{message}</div>
     </div>
    
   );

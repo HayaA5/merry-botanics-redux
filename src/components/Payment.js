@@ -1,69 +1,45 @@
-import { Navigate, useNavigate } from "react-router-dom";
-//import { Navigate } from "react-router-dom";
-import api from '../functions/API_Calls/apiCalls'
- import { useContext, useState } from "react";
-import { UserContext } from "../contexts/UserContext";
-import '../styles/Payment.css'
-import { orderConfirmation } from '../datas/emailTemplate'
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {CartContext} from '../contexts/CartContext'
+import { UserContext } from "../contexts/UserContext";
+import api from '../functions/API_Calls/apiCalls'
+import { orderConfirmationMsg } from '../datas/emailTemplate'
+import process from "process"; 
+import {v4} from 'uuid';
+import '../styles/Payment.css'
+
 const Payment=()=>{
-    const [user, setUser]=useContext(UserContext)
-    const [bla, setBla]=useState()
-    const [cart, setCart]=useContext(CartContext)
-console.log('cart', cart)
     const navigate=useNavigate();
+    const [user, ]=useContext(UserContext)
+    const [cart, ]=useContext(CartContext)
+    
     function handleClick(){
-        console.log('user payment',user)
-        //debugger;
-        const url='http://localhost:3001/api/orders/addorder';
-        debugger;
+        const url= `${process.env.REACT_APP_BASE_PATH}/api/orders/addorder`
         const cartElmts= cart.reduce((acc,article)=>[...acc,{qty:article.amount,barcode:article.barcode}],[])
         const total=cart.reduce((acc, article)=>acc+article.amount*article.price,0)
-    
-
         const data={
-            receiptNumber:"33362", //create a random unique number!
-            total:total,
-                    
+            receiptNumber:v4(), //create a random unique id (string)
+            total:total,     
             email:user.email,
-                    
             cart:cartElmts
-            
             }
-      
 
-        if (user.length==0){
-          
+        if (!user.email){
             navigate('/login');
         }else{
-            const result=  api.post(url, data).then((data)=>setBla(data));
-            
-
-        
-            
-              
-                     const data2 =orderConfirmation("aminovhaya@gmail.com", "order confirmation", data.cart)
-                const url2='http://localhost:3001/api/email/sendemail';
-                
-                      const result2 = api.post(url2, data2).then(data2=>{
-                        console.log('data in then',data2);
-                     // setEmail('');
-                     // emailInput.current.value=''
-                    })
-                      
-                    
+            //save in DB the order, update stock in DB and send a confirmation email
+           const data2 =orderConfirmationMsg(user.email, "order confirmation", cart)
+           const url2= `${process.env.REACT_APP_BASE_PATH}/api/email/sendemail`
+           if(data2){
+            const response =  api.post(url, data).then(()=>api.post(url2, data2)).then( setTimeout(()=>navigate('/receipt'),1000));
+           }
+                        
         }
     }
-    
-   /// console.log('payment function', setUser);
-    //check user is connected==> context
-    //send email with order
 
-    //post order in DB
     return(
         <div>
         <button className='payment-btn' onClick={handleClick}>Payment</button>
-        {/* {bla} */}
         </div>
     )
   

@@ -1,16 +1,15 @@
 import axios from 'axios'
 
-axios.defaults.baseURL = 'http://localhost:3001/api/'
+axios.defaults.baseURL =  `${process.env.REACT_APP_BASE_PATH}/api`
 
-//This is a generic API function. Here you can make axios calls by simply writing api.post or the method of your choosing
-//Be sure to check which parameters each method requests 
+//This is a generic API function. 
 
 const api = {
   get: async (url) => {
     return apiCalls('GET', url);
   },
   post: async (url, data) => {
-    return apiCalls('POST', url, data);
+    return await apiCalls('POST', url, data);
   },
   put: async (url, data) => {
     return apiCalls('PUT', url, data);
@@ -30,21 +29,18 @@ async function apiCalls(method, url, data) {
       url,
       data
     });
-    
-    console.log('res.data',res.data)
-    return res.data;
+    return await res.data;
   } catch (error) {
-    console.log (error)
     throw error;
   }
 }
 
 
-export const setToken = (token) => {
-  // when you do logout pass the parameter as an empty string
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}` //AUTH_TOKEN
+// export const setToken = (token) => {
+//   // when you do logout pass the parameter as an empty string
+//   axios.defaults.headers.common['Authorization'] = `Bearer ${token}` //AUTH_TOKEN
   
-}
+// }
 
 export default api;
 

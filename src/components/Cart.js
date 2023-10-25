@@ -1,20 +1,26 @@
 import { useState, useEffect, useContext } from 'react'
-import '../styles/Cart.css'
 import { CartContext } from '../contexts/CartContext';
-import { AiOutlineShoppingCart } from "react-icons/ai";
-import Payment from './Payment';
 import { UserContext } from '../contexts/UserContext';
-function Cart(){
-	const [user, setUser]=useContext(UserContext);
+import { useLocation } from 'react-router-dom';
+import Payment from './Payment';
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import '../styles/Cart.css'
+
+//function Cart({cartLS,logout}){
+function Cart(){	
+	const location = useLocation();
+	const logout = location.state?.logout;
+	const [user,]=useContext(UserContext);
 	const [cart,updateCart]=useContext(CartContext);	
 	const [isOpen, setIsOpen] = useState(true)
+	const [messageLogIn, setMessageLogIn]=useState('');
+	
 	const total = cart.reduce(
 		(acc, plantType) => acc + plantType.amount * plantType.price,
 		0
 	)
 
-	function removeFromCart(name) {
-				
+	function removeFromCart(name) {			
 			const cartFilteredCurrentPlant = cart.filter(
 				(plant) => plant.name !== name
 			)
@@ -23,10 +29,18 @@ function Cart(){
 			])
 		} 
 	
-
 	useEffect(() => {
 		document.title = `MB: ${total}$ shopping`
 	}, [total])
+
+useEffect( ()=>{
+	//localStorage.setItem('cart', JSON.stringify(cart));
+	setMessageLogIn('Aware! You are not logged in- data will be lost!'); 
+} ,[cart]
+	
+)
+useEffect( ()=>{
+	logout &&  updateCart([])},[logout])
 
 	return isOpen ? (
 		<div className='mb-cart'>
@@ -40,6 +54,8 @@ function Cart(){
 			{cart.length > 0 ? (
 				<div>
 					<h2>Cart</h2>
+					{!user.email &&<div className='message-login'>{messageLogIn}</div>}
+
 					<ul>
 						{cart.map(({ name, price, amount }, index) => (
 							<div className='one-article-in-cart' key={`${name}-${index}`}>
@@ -56,7 +72,7 @@ function Cart(){
 				</div>
 			) : (
 				<div>Your cart is empty</div>
-			)}
+			)}	
 		</div>
 	) : (
 		<div className='mb-cart-closed'>
@@ -65,7 +81,7 @@ function Cart(){
 				onClick={() => setIsOpen(true)}
 			>
 				Open cart
-			</button>
+			</button>	
 		</div>
 	)
 }
