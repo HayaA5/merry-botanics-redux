@@ -6,9 +6,14 @@ import Register from './pages/Register'
 import { UserProvider } from './contexts/UserContext'
 import './styles/App.css'
 import Orderconfirmation from './pages/Orderconfirmation'
+import { Provider } from 'react-redux';
+import { store } from './contexts/CartStore'
 
 function App() {
+
+
 	return (
+		<Provider store={store}>
     <UserProvider>
 		<div className={'fadeIn'}>	
   			<Routes>
@@ -19,6 +24,7 @@ function App() {
         	</Routes> 
 		</div>	
     </UserProvider>
+	</Provider>
 	)
 }
 export default App

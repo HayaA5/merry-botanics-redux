@@ -1,22 +1,24 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import {CartContext} from '../contexts/CartContext'
 import { UserContext } from "../contexts/UserContext";
 import api from '../functions/API_Calls/apiCalls'
 import { orderConfirmationMsg } from '../datas/emailTemplate'
 import process from "process"; 
 import {v4} from 'uuid';
 import '../styles/Payment.css'
+import { ReactReduxContext } from 'react-redux'
+import { connect } from 'react-redux'
+import { mapDispatchToProps, mapStateToProps } from '../contexts/CartStore';
 
-const Payment=()=>{
+const Payment=({reset})=>{
     const navigate=useNavigate();
     const [user, ]=useContext(UserContext)
-    const [cart, ]=useContext(CartContext)
-    
+    const { store } = useContext(ReactReduxContext)
+
     function handleClick(){
         const url= `${process.env.REACT_APP_BASE_PATH}/api/orders/addorder`
-        const cartElmts= cart.reduce((acc,article)=>[...acc,{qty:article.amount,barcode:article.barcode}],[])
-        const total=cart.reduce((acc, article)=>acc+article.amount*article.price,0)
+        const cartElmts= store.getState().reduce((acc,article)=>[...acc,{qty:article.amount,barcode:article.barcode}],[])
+        const total=store.getState().reduce((acc, article)=>acc+article.amount*article.price,0)
         const data={
             receiptNumber:v4(), //create a random unique id (string)
             total:total,     
@@ -28,10 +30,10 @@ const Payment=()=>{
             navigate('/login');
         }else{
             //save in DB the order, update stock in DB and send a confirmation email
-           const data2 =orderConfirmationMsg(user.email, "order confirmation", cart)
+           const data2 =orderConfirmationMsg(user.email, "order confirmation", store.getState())
            const url2= `${process.env.REACT_APP_BASE_PATH}/api/email/sendemail`
            if(data2){
-            const response =  api.post(url, data).then(()=>api.post(url2, data2)).then( setTimeout(()=>navigate('/receipt'),1000));
+            api.post(url, data).then(()=>api.post(url2, data2)).then(reset()).then( setTimeout(()=>navigate('/receipt'),1000));
            }
                         
         }
@@ -44,4 +46,4 @@ const Payment=()=>{
     )
   
 }
-export default Payment
+export default connect(mapStateToProps, mapDispatchToProps)(Payment)

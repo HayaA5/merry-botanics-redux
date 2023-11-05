@@ -1,17 +1,18 @@
-import { useState, useEffect, useContext } from 'react'
-import { CartContext } from '../contexts/CartContext';
+import React, { useState, useEffect, useContext } from 'react'
 import { UserContext } from '../contexts/UserContext';
 import { useLocation } from 'react-router-dom';
 import Payment from './Payment';
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import '../styles/Cart.css'
+import { connect } from 'react-redux'
+import { mapDispatchToProps, mapStateToProps } from '../contexts/CartStore';
+
 
 //function Cart({cartLS,logout}){
-function Cart(){	
+function Cart({ cart,  removeItem, reset }){
 	const location = useLocation();
 	const logout = location.state?.logout;
 	const [user,]=useContext(UserContext);
-	const [cart,updateCart]=useContext(CartContext);	
 	const [isOpen, setIsOpen] = useState(true)
 	const [messageLogIn, setMessageLogIn]=useState('');
 	
@@ -19,15 +20,6 @@ function Cart(){
 		(acc, plantType) => acc + plantType.amount * plantType.price,
 		0
 	)
-
-	function removeFromCart(name) {			
-			const cartFilteredCurrentPlant = cart.filter(
-				(plant) => plant.name !== name
-			)
-			updateCart([
-				...cartFilteredCurrentPlant
-			])
-		} 
 	
 	useEffect(() => {
 		document.title = `MB: ${total}$ shopping`
@@ -39,8 +31,8 @@ useEffect( ()=>{
 } ,[cart]
 	
 )
-useEffect( ()=>{
-	logout &&  updateCart([])},[logout])
+// useEffect( ()=>{
+// 	 logout &&  reset},[logout])
 
 	return isOpen ? (
 		<div className='mb-cart'>
@@ -60,13 +52,13 @@ useEffect( ()=>{
 						{cart.map(({ name, price, amount }, index) => (
 							<div className='one-article-in-cart' key={`${name}-${index}`}>
 								{name} {price}$ x {amount}
-								<button className='cart-btn' onClick={()=>{removeFromCart(name)}}>remove article</button>
+								<button className='cart-btn' onClick={()=>removeItem(name)}>remove article</button>
 							</div>
 						))}
 					</ul>
 					<h3>Total :{total}$</h3>
 					<div className='cart-btns-container'>
-					<button className='cart-btn' onClick={() => updateCart([])}>Empty cart</button>
+					<button className='cart-btn' onClick={reset}>Empty cart</button>
 					<Payment cart={cart}/>
 				</div>
 				</div>
@@ -86,4 +78,4 @@ useEffect( ()=>{
 	)
 }
 
-export default Cart
+export default connect(mapStateToProps, mapDispatchToProps)(Cart)

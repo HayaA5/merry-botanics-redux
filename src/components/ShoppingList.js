@@ -17,7 +17,7 @@ function ShoppingList(){
 
     useEffect(getPlantList,[]);
 	
-	if( plantList.length==0) {
+	if( plantList.length===0) {
 		return   <Loader/>
 	}
 	const categories = plantList.reduce(
